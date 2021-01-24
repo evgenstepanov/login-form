@@ -7,8 +7,10 @@ export default function FormRestorePassword() {
     scrolled: [scrolled, setScrolled],
     restoreForm: [restoreForm],
     isDisabledRestoreBtn: [isDisabledRestoreBtn],
+    restoreValidation: [restoreValidation],
     handleFormChange,
     toggleRestoreBtn,
+    cleanInput,
   } = React.useContext(StoreContext);
 
   useEffect(() => {
@@ -20,19 +22,24 @@ export default function FormRestorePassword() {
       <h3 className="title form__title">Восстановление пароля</h3>
       <div className="input-container form__input-container_restore">
         <input
-          className="input"
+          className={`input input-restore ${restoreValidation}`}
           type="text"
           name="restore"
           id="restore"
           placeholder="e-mail@mail.ru"
           autoComplete="off"
           required
-          value={restoreForm.login}
+          value={restoreForm.restore}
           onChange={handleFormChange}
         />
         <label className="label" htmlFor="restore">
           <span className="label__name">Логин или e-mail*</span>
         </label>
+        <input
+          className="button input_button"
+          type="button"
+          onClick={() => cleanInput('restore')}
+        />
       </div>
       <div className="restore-info">
         <img className="restore-info__img" src={attention} alt="attention" />
