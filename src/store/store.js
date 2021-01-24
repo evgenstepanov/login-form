@@ -6,7 +6,7 @@ export const StoreProvider = ({ children }) => {
   // валидный юзер для входа в систему
   const validUser = {
     login: 'pinchuk.fl@yandex.ru',
-    password: '123456',
+    password: '123',
   };
 
   // сохранение текстового вввода в инпуты логина и пароля
@@ -55,7 +55,19 @@ export const StoreProvider = ({ children }) => {
     }
   };
 
-  // управление вводом текста в любой инпут
+  const [restoreValidation, setRestoreValidation] = useState('');
+  const checkRestore = (value) => {
+    switch (value) {
+      case '': // на случай пустой строки
+        setRestoreValidation('empty');
+        break;
+      default:
+        setRestoreValidation('typing'); // любой набор текста
+        break;
+    }
+  };
+
+  // управление вводом текста в любой из трех инпутов
   // и распределение по соответствующим стейтам
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -68,7 +80,28 @@ export const StoreProvider = ({ children }) => {
       setLoginForm({ ...loginForm, [name]: value });
     }
     if (name === 'restore') {
-      setRestoreForm({ ...restoreForm, [name]: value });
+      checkRestore(value);
+      setRestoreForm({ [name]: value });
+    }
+  };
+
+  // очистка логина или пароля по клику на соответствующий крестик
+  const cleanInput = (input) => {
+    switch (input) {
+      case 'login':
+        setLoginForm({ ...loginForm, login: '' });
+        checkLogin('');
+        break;
+      case 'password':
+        setLoginForm({ ...loginForm, password: '' });
+        checkPassword('');
+        break;
+      case 'restore':
+        setRestoreForm({ restore: '' });
+        checkRestore('');
+        break;
+      default:
+        break;
     }
   };
 
@@ -105,8 +138,8 @@ export const StoreProvider = ({ children }) => {
   // осуществлен вход в систему, по валидному логину и паролю
   const [isEntered, setIsEntered] = useState(false);
   const getInSystem = (e) => {
-    // вход при нажатии на Enter в любом из инпутов
-    // при условии, что введены верно логин и пароль
+    // вход при нажатии на Enter при фокусе на логине или пароле
+    // при условии, что логин и пароль введены верно
     if (
       e.key === 'Enter' &&
       JSON.stringify(validUser) === JSON.stringify(loginForm)
@@ -114,7 +147,7 @@ export const StoreProvider = ({ children }) => {
       setIsEntered(!isEntered);
     }
     // сразу вход при событии "click",
-    // который прийдет от кнопки "Войти в систему"
+    // который придет от кнопки "Войти в систему"
     // т.к. она становится активной только при верных логине и пароле
     if (e.type === 'click') {
       setIsEntered(!isEntered);
@@ -136,8 +169,10 @@ export const StoreProvider = ({ children }) => {
     isDisabledRestoreBtn: [isDisabledRestoreBtn, setIsDisabledRestoreBtn],
     loginValidation: [loginValidation, setLoginValidation],
     passwordValidation: [passwordValidation, setPasswordValidation],
+    restoreValidation: [restoreValidation, setRestoreValidation],
     isEntered: [isEntered, setIsEntered],
     getInSystem,
+    cleanInput,
   };
   return (
     <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
