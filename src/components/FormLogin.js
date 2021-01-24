@@ -11,6 +11,7 @@ export default function FormLogin() {
     handleFormChange,
     toggleLoginBtn,
     getInSystem,
+    cleanInput,
   } = React.useContext(StoreContext);
 
   useEffect(() => {
@@ -37,7 +38,11 @@ export default function FormLogin() {
           <span className="label__name">Логин*</span>
           <div className="clear" />
         </label>
-
+        <input
+          className="button input_button"
+          type="button"
+          onClick={() => cleanInput('login')}
+        />
         {loginValidation === 'wrong' ? (
           <p className="input-login__wrong">Введите логин корректно</p>
         ) : null}
@@ -58,6 +63,11 @@ export default function FormLogin() {
         <label className="label" htmlFor="login">
           <span className="label__name">Пароль*</span>
         </label>
+        <input
+          className="button input_button"
+          type="button"
+          onClick={() => cleanInput('password')}
+        />
       </div>
       <div className="submit-bar">
         <button
